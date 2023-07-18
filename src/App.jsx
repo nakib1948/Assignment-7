@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-
 const App = () => {
   const [inputText, setInputText] = useState("");
   const [displayTexts, setDisplayTexts] = useState([]);
-  const [isChecked, setIsChecked] = useState(false);
 
   const handleInputChange = (event) => {
     if (event.target.value !== "") setInputText(event.target.value);
@@ -12,7 +10,7 @@ const App = () => {
   const handleFormSubmit = (event) => {
     event.preventDefault();
     if (inputText !== "") {
-      setDisplayTexts([...displayTexts, inputText]);
+      setDisplayTexts([...displayTexts, { text: inputText, isChecked: false }]);
       setInputText("");
     }
   };
@@ -20,6 +18,12 @@ const App = () => {
   const handleDeleteTask = (index) => {
     const updatedTasks = [...displayTexts];
     updatedTasks.splice(index, 1);
+    setDisplayTexts(updatedTasks);
+  };
+
+  const handleToggleTask = (index) => {
+    const updatedTasks = [...displayTexts];
+    updatedTasks[index].isChecked = !updatedTasks[index].isChecked;
     setDisplayTexts(updatedTasks);
   };
 
@@ -45,17 +49,17 @@ const App = () => {
             Add Task
           </button>
         </form>
-        {displayTexts.map((text, index) => (
+        {displayTexts.map((task, index) => (
           <div key={index} className="flex items-center join">
             <input
               type="checkbox"
-              checked={isChecked}
-              onChange={() => setIsChecked(!isChecked)}
+              checked={task.isChecked}
+              onChange={() => handleToggleTask(index)}
               className="checkbox checkbox-primary join-item"
             />
-            {!isChecked ? (
+            {!task.isChecked ? (
               <p className="bg-white text-center rounded-lg py-3 mt-4 mx-2 shadow-md flex-grow join-item">
-                {text}
+                {task.text}
               </p>
             ) : (
               <p className="bg-white text-center rounded-lg py-3 mt-4 mx-2 shadow-md flex-grow join-item">
